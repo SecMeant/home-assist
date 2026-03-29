@@ -20,30 +20,32 @@ def main():
 
     # Initialize the speech recognizer
     r = sr.Recognizer()
-    
+
     # Use the default microphone
     with sr.Microphone(sample_rate=16000) as source:
         print("\nAdjusting for ambient noise... Please wait 1 second.")
         r.adjust_for_ambient_noise(source, duration=1)
         print("\nReady! Speak into your microphone. (Press Ctrl+C to stop)")
-        
+
         while True:
             try:
                 # Listen for speech. It will automatically stop recording when you pause.
+                print('Listening...', end='', flush = True)
                 audio = r.listen(source)
-                
+                print('DONE')
+
                 # Convert the raw audio data to a numpy array (required by faster-whisper)
                 audio_data = np.frombuffer(audio.get_raw_data(), np.int16).astype(np.float32) / 32768.0
-                
+
                 # Transcribe the audio
                 # vad_filter=True prevents hallucinating text on silent/background noise
                 segments, info = model.transcribe(audio_data, beam_size=5, vad_filter=True)
-                
+
                 # Print the transcribed text
                 text = "".join([segment.text for segment in segments])
                 if text.strip():
                     print(f"You: {text.strip()}")
-                    
+
             except KeyboardInterrupt:
                 print("\nStopping transcription...")
                 break
