@@ -7,7 +7,7 @@ import speech_recognition as sr
 import requests
 from faster_whisper import WhisperModel
 
-from audio_stream import AudioStreamServer
+from remote_microphone import RemoteMicrophone
 
 CERT_PATH = os.environ.get('SSL_CERT_PATH')
 
@@ -48,27 +48,6 @@ def handle_command(command_text):
         else:
             print("Could not find a number to increment. Please say 'increment <number>'.")
 
-
-class AudioStream:
-    def __init__(self):
-        self.source = None
-        self.
-
-    def open_remote(self, server_host='10.0.0.1', server_port=9570):
-        self.source = AudioStreamServer(server_host, server_port)
-        self.source.accept()
-
-    def open_local(self):
-        self.source = sr.Microphone(sample_rate=16000)
-        self.source.adjust_for_ambient_noise(self.source, duration=1)
-
-    def close(self):
-        self.source.close()
-
-    def read(self):
-        return self.source.receive_audio()
-
-
 def main():
     # model_size = "large-v3"
     # model_size = "distil-large-v3"
@@ -87,7 +66,8 @@ def main():
     r.pause_threshold = 1.5
 
     # Use the default microphone
-    source = sr.Microphone(sample_rate=16000)
+    #source = sr.Microphone(sample_rate=16000)
+    source = RemoteMicrophone(sock)
 
     print("\nAdjusting for ambient noise... Please wait 1 second.")
     r.adjust_for_ambient_noise(source, duration=1)
