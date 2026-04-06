@@ -7,7 +7,7 @@ import speech_recognition as sr
 import requests
 from faster_whisper import WhisperModel
 
-from remote_microphone import RemoteMicrophone
+from audio_stream import RemoteMicrophone
 
 CERT_PATH = os.environ.get('SSL_CERT_PATH')
 
@@ -67,7 +67,8 @@ def main():
 
     # Use the default microphone
     #source = sr.Microphone(sample_rate=16000)
-    source = RemoteMicrophone(sock)
+    source = RemoteMicrophone(host='172.16.0.5', port=9560)
+    source.accept() # Accepts new client. Blocks until remote audio stream connects.
 
     print("\nAdjusting for ambient noise... Please wait 1 second.")
     r.adjust_for_ambient_noise(source, duration=1)
