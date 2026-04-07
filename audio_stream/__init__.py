@@ -1,4 +1,8 @@
-from .remote_microphone import RemoteMicrophone
 from .audio_stream import AudioStream
 
-__all__ = ["RemoteMicrophone", "AudioStream"]
+try:
+    from .remote_microphone import RemoteMicrophone
+except ImportError:
+    pass
+
+__all__ = ["AudioStream", "RemoteMicrophone"]
